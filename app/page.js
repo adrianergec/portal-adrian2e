@@ -1021,8 +1021,7 @@ export default function Adrian2ePortal() {
       </div>
       </div>
 
-      {/* SIDEBAR */}
-      <aside className="sidebar">
+           <aside className="sidebar">
         <button 
           className="sidebar-toggle"
           onClick={() => setSidebarOpen(!sidebarOpen)}
