@@ -466,7 +466,6 @@ export default function Adrian2ePortal() {
           box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
         }
 
-        /* === SIDEBAR === */
         .sidebar {
           width: ${sidebarOpen ? '300px' : '60px'};
           height: 100vh;
