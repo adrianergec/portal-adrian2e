@@ -141,6 +141,66 @@ export default function Adrian2ePortal() {
       display: 'flex'
     }}>
       
+      {/* LANGUAGE SELECTOR - FIXO NO TOPO! */}
+      <div style={{
+        position: 'fixed',
+        top: '0',
+        left: '280px',
+        right: '0',
+        backgroundColor: '#ffffff',
+        borderBottom: '1px solid #dadce0',
+        padding: '12px 40px',
+        zIndex: 1000,
+        display: 'flex',
+        justifyContent: 'flex-end',
+        gap: '10px',
+        flexWrap: 'wrap',
+        boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+      }}>
+        {[
+          {code: 'en', label: '🇬🇧 EN'}, 
+          {code: 'pt', label: '🇧🇷 PT'},
+          {code: 'tr', label: '🇹🇷 TR', tag: 'Família'},
+          {code: 'cs', label: '🇨🇿 CS', tag: 'Identidade'},
+          {code: 'vi', label: '🇻🇳 VI'},
+          {code: 'de', label: '🇩🇪 DE'},
+          {code: 'ru', label: '🇷🇺 RU'},
+          {code: 'es', label: '🇪🇸 ES'}
+        ].map(lang => (
+          <div key={lang.code} style={{ position: 'relative' }}>
+            <button
+              onClick={() => setSelectedLanguage(lang.code)}
+              style={{
+                padding: '6px 12px',
+                border: `2px solid ${selectedLanguage === lang.code ? '#1a73e8' : '#dadce0'}`,
+                backgroundColor: selectedLanguage === lang.code ? '#e8f0fe' : '#fff',
+                color: selectedLanguage === lang.code ? '#1a73e8' : '#5f6368',
+                borderRadius: '16px',
+                cursor: 'pointer',
+                fontSize: '13px',
+                fontWeight: '500'
+              }}
+            >
+              {lang.label}
+            </button>
+            {lang.tag && (
+              <span style={{
+                position: 'absolute',
+                top: '-6px',
+                right: '-6px',
+                backgroundColor: '#34a853',
+                color: '#fff',
+                fontSize: '9px',
+                padding: '2px 5px',
+                borderRadius: '6px',
+                fontWeight: 'bold'
+              }}>
+                {lang.tag}
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
       {/* SIDEBAR */}
       <aside style={{
         width: '280px',
@@ -303,8 +363,8 @@ export default function Adrian2ePortal() {
 
       {/* MAIN CONTENT */}
       <main style={{
-        marginLeft: '280px',
-        padding: '40px',
+        marginLeft: '320px',
+        padding: '100px 60px 40px 60px', // Padding-top maior para não ficar atrás da barra de idiomas
         flex: 1,
         maxWidth: '1200px'
       }}>
@@ -350,58 +410,6 @@ export default function Adrian2ePortal() {
           }}>
             {t.heroSubtitle}
           </p>
-
-          {/* LANGUAGE SELECTOR - COM TURCO E TCHECO! */}
-          <div style={{
-            marginTop: '30px',
-            display: 'flex',
-            gap: '10px',
-            flexWrap: 'wrap'
-          }}>
-            {[
-              {code: 'en', label: '🇬🇧 EN'}, 
-              {code: 'pt', label: '🇧🇷 PT'},
-              {code: 'tr', label: '🇹🇷 TR', tag: 'Família'},
-              {code: 'cs', label: '🇨🇿 CS', tag: 'Identidade'},
-              {code: 'vi', label: '🇻🇳 VI'},
-              {code: 'de', label: '🇩🇪 DE'},
-              {code: 'ru', label: '🇷🇺 RU'},
-              {code: 'es', label: '🇪🇸 ES'}
-            ].map(lang => (
-              <div key={lang.code} style={{ position: 'relative' }}>
-                <button
-                  onClick={() => setSelectedLanguage(lang.code)}
-                  style={{
-                    padding: '8px 16px',
-                    border: `2px solid ${selectedLanguage === lang.code ? '#1a73e8' : '#dadce0'}`,
-                    backgroundColor: selectedLanguage === lang.code ? '#e8f0fe' : '#fff',
-                    color: selectedLanguage === lang.code ? '#1a73e8' : '#5f6368',
-                    borderRadius: '20px',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                    fontWeight: '500'
-                  }}
-                >
-                  {lang.label}
-                </button>
-                {lang.tag && (
-                  <span style={{
-                    position: 'absolute',
-                    top: '-8px',
-                    right: '-8px',
-                    backgroundColor: '#34a853',
-                    color: '#fff',
-                    fontSize: '10px',
-                    padding: '2px 6px',
-                    borderRadius: '8px',
-                    fontWeight: 'bold'
-                  }}>
-                    {lang.tag}
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
         </header>
 
         {/* 2019 GENESIS */}
