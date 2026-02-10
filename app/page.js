@@ -1,327 +1,99 @@
 "use client";
 
-import React, { useState } from 'react';
-'use client';
+import React, { useState, useEffect } from 'react';
+import { createClient } from '@sanity/client';
 
-import React, { useState } from 'react';
+// CONEXÃO COM A SUA OFICINA (SANITY)
+const client = createClient({
+  projectId: '8k2p3ky1',
+  dataset: 'production',
+  useCdn: true,
+  apiVersion: '2023-05-03',
+});
 
-export default function Adrian2ePortal() {
-  const [selectedLanguage, setSelectedLanguage] = useState('en');
+export default function VitrineRawTalent() {
+  const [tesouros, setTesouros] = useState([]);
+  const [categorias, setCategorias] = useState([]);
+  const [filtro, setFiltro] = useState('all');
+  const [loading, setLoading] = useState(true);
 
-  const translations = {
-    en: {
-      title: 'Keyboard Engineering',
-      subtitle: 'Natural cognitive development documented',
-      linguisticsDB: 'Linguistics Database',
-      programming: 'Programming',
-      projects: 'Projects'
-    },
-    pt: {
-      title: 'Engenharia de Teclados',
-      subtitle: 'Desenvolvimento cognitivo natural documentado',
-      linguisticsDB: 'Base de Linguística',
-      programming: 'Programação',
-      projects: 'Projetos'
+  useEffect(() => {
+    async function buscarDados() {
+      try {
+        // Buscamos as Categorias e os Tesouros que você vai subir no Painel
+        const query = `*[_type in ["category", "documentoAdrian"]] | order(_createdAt desc) {
+          ...,
+          "categoriaNome": categoria->title,
+          "fotos": imagens[].asset->url
+        }`;
+        const data = await client.fetch(query);
+        setCategorias(data.filter(i => i._type === 'category'));
+        setTesouros(data.filter(i => i._type === 'documentoAdrian'));
+        setLoading(false);
+      } catch (e) {
+        console.error("Erro na conexão:", e);
+        setLoading(false);
+      }
     }
-  };
-
-  const t = translations[selectedLanguage];
+    buscarDados();
+  }, []);
 
   return (
-    <div style={{ 
-      fontFamily: 'Arial, sans-serif',
-      backgroundColor: '#ffffff',
-      minHeight: '100vh',
-      margin: 0,
-      padding: 0
-    }}>
+    <div style={{ backgroundColor: '#ffffff', minHeight: '100vh', fontFamily: 'sans-serif' }}>
       
-      {/* ========== BANNER RAW TALENT ========== */}
-      <div style={{
-        width: '100%',
-        backgroundColor: 'white'
-      }}>
-        <div style={{
-          display: 'flex',
-          flexDirection: window.innerWidth <= 768 ? 'column' : 'row',
-          maxWidth: '1400px',
-          margin: '0 auto'
-        }}>
-          
-          {/* IMAGEM DO ADRIAN */}
-          <div style={{
-            width: window.innerWidth <= 768 ? '100%' : '480px',
-            minHeight: window.innerWidth <= 768 ? '300px' : '600px',
-            backgroundColor: '#f5f5f5',
-            overflow: 'hidden',
-            flexShrink: 0
-          }}>
-            <img 
-              src="https://cdn.sanity.io/images/ot2tkq29/production/dcbae6479811c83b5ce8afb80a2551c7fba7ec34-1200x1200.png" 
-              alt="Adrian - Raw Talent"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                objectPosition: 'center'
-              }}
-            />
-          </div>
-          
-          {/* CONTEÚDO DO BANNER */}
-          <div style={{
-            padding: window.innerWidth <= 768 ? '40px 20px' : '80px 60px',
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center'
-          }}>
-            <div style={{
-              fontSize: '11px',
-              fontWeight: '700',
-              letterSpacing: '2px',
-              textTransform: 'uppercase',
-              color: '#e53e3e',
-              marginBottom: '20px'
-            }}>
-              Observational Documentation
-            </div>
-            
-            <h1 style={{
-              fontSize: window.innerWidth <= 768 ? '42px' : '72px',
-              fontWeight: '700',
-              letterSpacing: '-1px',
-              lineHeight: '1',
-              marginBottom: '24px',
-              color: '#1a1a1a',
-              margin: '0 0 24px 0'
-            }}>
-              RAW TALENT
-            </h1>
-            
-            <p style={{
-              fontSize: window.innerWidth <= 768 ? '20px' : '28px',
-              fontWeight: '400',
-              fontStyle: 'italic',
-              color: '#4a4a4a',
-              marginBottom: '30px',
-              lineHeight: '1.4',
-              margin: '0 0 30px 0'
-            }}>
-              The Journey of Adrian
-            </p>
-            
-            <p style={{
-              fontSize: window.innerWidth <= 768 ? '16px' : '17px',
-              lineHeight: '1.8',
-              color: '#2d2d2d',
-              marginBottom: '30px',
-              margin: '0 0 30px 0'
-            }}>
-              A longitudinal study documenting the natural emergence of structured 
-              language, cognition, and engineering design in a neurodivergent child—without 
-              training, pressure, or acceleration.
-            </p>
-
-            {/* META INFO */}
-            <div style={{
-              display: 'flex',
-              flexDirection: window.innerWidth <= 768 ? 'column' : 'row',
-              gap: window.innerWidth <= 768 ? '16px' : '30px',
-              paddingTop: '30px',
-              borderTop: '2px solid #e5e5e5'
-            }}>
-              <div style={{ flex: 1 }}>
-                <div style={{
-                  fontSize: '11px',
-                  fontWeight: '600',
-                  letterSpacing: '1px',
-                  textTransform: 'uppercase',
-                  color: '#999',
-                  marginBottom: '8px'
-                }}>Profile</div>
-                <div style={{
-                  fontSize: '15px',
-                  fontWeight: '600',
-                  color: '#1a1a1a'
-                }}>2e (Twice Exceptional)</div>
-              </div>
-              
-              <div style={{ flex: 1 }}>
-                <div style={{
-                  fontSize: '11px',
-                  fontWeight: '600',
-                  letterSpacing: '1px',
-                  textTransform: 'uppercase',
-                  color: '#999',
-                  marginBottom: '8px'
-                }}>Status</div>
-                <div style={{
-                  fontSize: '15px',
-                  fontWeight: '600',
-                  color: '#1a1a1a'
-                }}>Untrained / Autodidact</div>
-              </div>
-              
-              <div style={{ flex: 1 }}>
-                <div style={{
-                  fontSize: '11px',
-                  fontWeight: '600',
-                  letterSpacing: '1px',
-                  textTransform: 'uppercase',
-                  color: '#999',
-                  marginBottom: '8px'
-                }}>Documentation</div>
-                <div style={{
-                  fontSize: '15px',
-                  fontWeight: '600',
-                  color: '#1a1a1a'
-                }}>2019 — Present</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ========== CONTEÚDO PRINCIPAL ========== */}
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: window.innerWidth <= 768 ? '30px 20px' : '60px 40px'
-      }}>
-        
-        {/* LANGUAGE SELECTOR */}
-        <div style={{
-          display: 'flex',
-          gap: '10px',
-          marginBottom: '40px',
-          flexWrap: 'wrap',
-          justifyContent: window.innerWidth <= 768 ? 'center' : 'flex-start'
-        }}>
-          {[
-            {code: 'en', label: '🇬🇧 EN'}, 
-            {code: 'pt', label: '🇧🇷 PT'}
-          ].map(lang => (
-            <button
-              key={lang.code}
-              onClick={() => setSelectedLanguage(lang.code)}
-              style={{
-                padding: '8px 16px',
-                border: `2px solid ${selectedLanguage === lang.code ? '#1a73e8' : '#dadce0'}`,
-                backgroundColor: selectedLanguage === lang.code ? '#e8f0fe' : '#fff',
-                color: selectedLanguage === lang.code ? '#1a73e8' : '#5f6368',
-                borderRadius: '20px',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: '500'
-              }}
-            >
-              {lang.label}
-            </button>
+      {/* MENU DROP-DOWN DINÂMICO (ELE LÊ O SEU PAINEL) */}
+      <nav style={{ padding: '20px', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, backgroundColor: '#fff', zIndex: 10 }}>
+        <div style={{ fontWeight: 'bold', fontSize: '24px' }}>RAW TALENT</div>
+        <select 
+          onChange={(e) => setFiltro(e.target.value)}
+          style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
+        >
+          <option value="all">Todas as Categorias</option>
+          {categorias.map(cat => (
+            <option key={cat._id} value={cat.title}>{cat.title}</option>
           ))}
-        </div>
+        </select>
+      </nav>
 
-        {/* TÍTULO DA SEÇÃO */}
-        <h2 style={{
-          fontSize: window.innerWidth <= 768 ? '24px' : '32px',
-          fontWeight: '400',
-          color: '#202124',
-          marginBottom: '30px',
-          margin: '0 0 30px 0'
-        }}>
-          {t.title}
-        </h2>
+      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
+        {loading ? (
+          <p style={{ textAlign: 'center' }}>Abrindo a oficina...</p>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '60px' }}>
+            {tesouros
+              .filter(t => filtro === 'all' || t.categoriaNome === filtro)
+              .map(item => (
+                <section key={item._id} style={{ borderBottom: '2px solid #f0f0f0', paddingBottom: '40px' }}>
+                  
+                  {/* TÍTULO E DESCRIÇÃO (OS TIJOLOS) */}
+                  <h2 style={{ fontSize: '32px', marginBottom: '10px' }}>{item.title}</h2>
+                  <p style={{ fontSize: '18px', color: '#444', marginBottom: '30px', lineHeight: '1.6' }}>{item.descricao}</p>
 
-        {/* CARD DE EXEMPLO */}
-        <div style={{
-          backgroundColor: '#fff',
-          border: '1px solid #dadce0',
-          borderRadius: '8px',
-          padding: '30px',
-          boxShadow: '0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15)',
-          marginBottom: '20px'
-        }}>
-          <h3 style={{
-            fontSize: '20px',
-            fontWeight: '500',
-            color: '#202124',
-            marginBottom: '15px',
-            margin: '0 0 15px 0'
-          }}>
-            ⌨️ Ossetian Keyboard Layout
-          </h3>
-          
-          <p style={{
-            fontSize: '16px',
-            color: '#5f6368',
-            lineHeight: '1.6',
-            marginBottom: '20px',
-            margin: '0 0 20px 0'
-          }}>
-            "At approximately 12 months old, Adrian displays advanced problem-solving 
-            skills and intrinsic motivation. Without formal instruction, he navigates 
-            physical obstacles to access technology."
-          </p>
+                  {/* GALERIA DE 1 A 5 FOTOS */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '30px' }}>
+                    {item.fotos && item.fotos.map((url, index) => (
+                      <img key={index} src={url} style={{ width: '100%', borderRadius: '8px', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} alt="Tesouro do Adrian" />
+                    ))}
+                  </div>
 
-          <div style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '8px',
-            marginBottom: '20px'
-          }}>
-            {['Cirílico Estendido', 'Unicode Avançado', 'Multi-layer'].map((tag, idx) => (
-              <span key={idx} style={{
-                fontSize: '12px',
-                backgroundColor: '#e8f0fe',
-                color: '#1a73e8',
-                padding: '6px 12px',
-                borderRadius: '12px',
-                fontWeight: '500'
-              }}>
-                {tag}
-              </span>
+                  {/* VÍDEOS DO YOUTUBE (1 A 2) */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+                    {item.videosYoutube && item.videosYoutube.map((url, idx) => (
+                      <div key={idx} style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
+                        <iframe 
+                          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: '8px' }}
+                          src={url.replace("watch?v=", "embed/")} 
+                          frameBorder="0" 
+                          allowFullScreen
+                        ></iframe>
+                      </div>
+                    ))}
+                  </div>
+                </section>
             ))}
           </div>
-
-          <div style={{
-            fontSize: '13px',
-            color: '#999',
-            marginBottom: '20px'
-          }}>
-            Created: February 10, 2026
-          </div>
-
-          <button style={{
-            width: '100%',
-            padding: '12px',
-            backgroundColor: '#1a73e8',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: 'pointer',
-            fontSize: '15px',
-            fontWeight: '500'
-          }}>
-            View Details
-          </button>
-        </div>
-
-        {/* MENSAGEM DE INFO */}
-        <div style={{
-          padding: '20px',
-          backgroundColor: '#f8f9fa',
-          borderRadius: '8px',
-          border: '1px solid #dadce0',
-          textAlign: 'center',
-          color: '#5f6368',
-          fontSize: '14px'
-        }}>
-          <p style={{ margin: 0 }}>
-            {t.subtitle}
-          </p>
-        </div>
-
-      </div>
+        )}
+      </main>
     </div>
   );
 }
