@@ -1,99 +1,81 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@sanity/client';
 
-// CONEXÃO COM A SUA OFICINA (SANITY)
-const client = createClient({
-  projectId: '8k2p3ky1',
-  dataset: 'production',
-  useCdn: true,
-  apiVersion: '2023-05-03',
-});
+export default function Adrian2ePortal() {
+  const [isMobile, setIsMobile] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
 
-export default function VitrineRawTalent() {
-  const [tesouros, setTesouros] = useState([]);
-  const [categorias, setCategorias] = useState([]);
-  const [filtro, setFiltro] = useState('all');
-  const [loading, setLoading] = useState(true);
-
+  // Proteção para a "vaca não dormir" na Vercel (Erro de Window)
   useEffect(() => {
-    async function buscarDados() {
-      try {
-        // Buscamos as Categorias e os Tesouros que você vai subir no Painel
-        const query = `*[_type in ["category", "documentoAdrian"]] | order(_createdAt desc) {
-          ...,
-          "categoriaNome": categoria->title,
-          "fotos": imagens[].asset->url
-        }`;
-        const data = await client.fetch(query);
-        setCategorias(data.filter(i => i._type === 'category'));
-        setTesouros(data.filter(i => i._type === 'documentoAdrian'));
-        setLoading(false);
-      } catch (e) {
-        console.error("Erro na conexão:", e);
-        setLoading(false);
-      }
-    }
-    buscarDados();
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return (
-    <div style={{ backgroundColor: '#ffffff', minHeight: '100vh', fontFamily: 'sans-serif' }}>
+    <div style={{ fontFamily: 'Arial, sans-serif', backgroundColor: '#ffffff', minHeight: '100vh', margin: 0 }}>
       
-      {/* MENU DROP-DOWN DINÂMICO (ELE LÊ O SEU PAINEL) */}
-      <nav style={{ padding: '20px', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, backgroundColor: '#fff', zIndex: 10 }}>
-        <div style={{ fontWeight: 'bold', fontSize: '24px' }}>RAW TALENT</div>
-        <select 
-          onChange={(e) => setFiltro(e.target.value)}
-          style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
-        >
-          <option value="all">Todas as Categorias</option>
-          {categorias.map(cat => (
-            <option key={cat._id} value={cat.title}>{cat.title}</option>
-          ))}
-        </select>
-      </nav>
-
-      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
-        {loading ? (
-          <p style={{ textAlign: 'center' }}>Abrindo a oficina...</p>
-        ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '60px' }}>
-            {tesouros
-              .filter(t => filtro === 'all' || t.categoriaNome === filtro)
-              .map(item => (
-                <section key={item._id} style={{ borderBottom: '2px solid #f0f0f0', paddingBottom: '40px' }}>
-                  
-                  {/* TÍTULO E DESCRIÇÃO (OS TIJOLOS) */}
-                  <h2 style={{ fontSize: '32px', marginBottom: '10px' }}>{item.title}</h2>
-                  <p style={{ fontSize: '18px', color: '#444', marginBottom: '30px', lineHeight: '1.6' }}>{item.descricao}</p>
-
-                  {/* GALERIA DE 1 A 5 FOTOS */}
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '30px' }}>
-                    {item.fotos && item.fotos.map((url, index) => (
-                      <img key={index} src={url} style={{ width: '100%', borderRadius: '8px', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} alt="Tesouro do Adrian" />
-                    ))}
-                  </div>
-
-                  {/* VÍDEOS DO YOUTUBE (1 A 2) */}
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
-                    {item.videosYoutube && item.videosYoutube.map((url, idx) => (
-                      <div key={idx} style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
-                        <iframe 
-                          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: '8px' }}
-                          src={url.replace("watch?v=", "embed/")} 
-                          frameBorder="0" 
-                          allowFullScreen
-                        ></iframe>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-            ))}
+      {/* ========== O BANNER (A Fachada da Mansão) ========== */}
+      <div style={{ width: '100%', backgroundColor: 'white', borderBottom: '1px solid #eee' }}>
+        <div style={{
+          display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
+          maxWidth: '1400px',
+          margin: '0 auto'
+        }}>
+          {/* Espaço para a Foto do Adrian (Raw Talent) */}
+          <div style={{
+            width: isMobile ? '100%' : '500px',
+            height: isMobile ? '400px' : '700px',
+            backgroundColor: '#f9f9f9'
+          }}>
+            <img 
+              src="https://cdn.sanity.io/images/8k2p3ky1/production/dcbae6479811c83b5ce8afb80a2551c7fba7ec34-1200x1200.png" 
+              alt="Raw Talent - Adrian"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
           </div>
-        )}
-      </main>
+
+          {/* Texto de Boas-Vindas */}
+          <div style={{ padding: isMobile ? '40px 20px' : '80px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <h1 style={{ fontSize: isMobile ? '48px' : '82px', fontWeight: '800', margin: '0 0 20px 0', letterSpacing: '-2px' }}>
+              RAW TALENT
+            </h1>
+            <p style={{ fontSize: '24px', fontStyle: 'italic', color: '#666', marginBottom: '40px' }}>
+              The Journey of Adrian
+            </p>
+            <div style={{ height: '2px', backgroundColor: '#e53e3e', width: '60px', marginBottom: '40px' }}></div>
+            <p style={{ fontSize: '18px', lineHeight: '1.8', color: '#333', maxWidth: '600px' }}>
+              Documenting the natural emergence of structured language and engineering design 
+              in a neurodivergent mind.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* ========== ÁREA DOS MÓVEIS (Onde os cards vão aparecer) ========== */}
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 20px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '60px' }}>
+          <h2 style={{ fontSize: '32px', fontWeight: '300' }}>Documentation Archive</h2>
+          <p style={{ color: '#888' }}>Waiting for Sanity data to be furnished...</p>
+        </div>
+
+        {/* Aqui é onde a mágica vai acontecer quando conectarmos o Sanity */}
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: isMobile ? '1 row' : 'repeat(auto-fill, minmax(350px, 1fr))', 
+          gap: '30px' 
+        }}>
+          {/* Placeholder de um card vazio (A mobília que vai chegar) */}
+          <div style={{ padding: '40px', border: '1px dashed #ccc', borderRadius: '12px', textAlign: 'center' }}>
+            <span style={{ fontSize: '40px' }}>📦</span>
+            <p style={{ color: '#ccc' }}>Project data will load here</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }
